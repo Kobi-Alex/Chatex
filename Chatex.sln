@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatex", "Chatex\Chatex.csproj", "{6A6A390B-A6CF-4F2B-A97C-F2C0D50D263F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "Chatex\Chat.csproj", "{6A6A390B-A6CF-4F2B-A97C-F2C0D50D263F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{C2B3FBC5-8E4C-4056-BE22-15DD94022B7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6A6A390B-A6CF-4F2B-A97C-F2C0D50D263F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A6A390B-A6CF-4F2B-A97C-F2C0D50D263F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A6A390B-A6CF-4F2B-A97C-F2C0D50D263F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2B3FBC5-8E4C-4056-BE22-15DD94022B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2B3FBC5-8E4C-4056-BE22-15DD94022B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2B3FBC5-8E4C-4056-BE22-15DD94022B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2B3FBC5-8E4C-4056-BE22-15DD94022B7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
