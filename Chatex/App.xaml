@@ -11,6 +11,15 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+
+            <!--<Style TargetType="{x:Type Path}">
+                <Setter Property="Height" Value="20"></Setter>
+                <Setter Property="Width" Value="20"></Setter>
+                <Setter Property="Stretch" Value="Uniform"></Setter>
+               
+            </Style>-->
+                       
         </ResourceDictionary>
     </Application.Resources>
 </Application>

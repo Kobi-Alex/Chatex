@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="Chatex.CustomerControls.StatusThumbs"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Chatex.CustomerControls" xmlns:viewmodels="clr-namespace:Chatex.ViewModels" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" >
+
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="thumbsTemplate">
+            <!--Ellipse-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                
+                <Grid>
+                    <Ellipse
+                    x:Name="outerEllipse"
+                    Width="55"
+                    Height="55"
+                    Stretch="Uniform"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource PrimaryHueDarkBrush}"
+                    StrokeDashArray="5"
+                    StrokeDashCap="Round"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+                    </Ellipse>
+
+                    <Ellipse
+                    x:Name="innerEllipse"
+                    Margin="5 0"
+                    Width="48"
+                    Height="48"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    >
+
+                        <Ellipse.Style>
+                            <Style TargetType="{x:Type Ellipse}">
+                                <Setter 
+                                    Property="Fill" 
+                                    Value="{StaticResource PrimaryHueDarkBrush}">
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger 
+                                        Binding="{Binding IsMeAddStatus}"
+                                        Value ="False">
+                                        <Setter Property="Fill">
+                                            <Setter.Value>
+                                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding StatusImage}">
+                                                    
+                                                </ImageBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+
+                    </Ellipse>
+
+
+                    <Path
+                    Fill="#dce1de"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Stretch="Fill">
+
+                        <Path.Data>
+                            <PathGeometry>
+                                <PathGeometry.Figures>
+                                    M 0,10 L10,0 20,10 10,3Z
+                                </PathGeometry.Figures>
+                            </PathGeometry>
+                        </Path.Data>
+                        <Path.Style>
+                            <Style TargetType="{x:Type Path}">
+                                <Style.Triggers>
+                                    <DataTrigger 
+                                        Binding="{Binding IsMeAddStatus}"
+                                        Value ="False">
+                                        <Setter Property="Visibility"
+                                                Value="Hidden">
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Grid>
+
+                <!--Contact profile ellipse-->
+                <Ellipse
+                    x:Name="contactPhotoEllipse"
+                    Width="26"
+                    Height="26"
+                    Stretch="Uniform"
+                    StrokeThickness="2"
+                    Stroke="#dce1de"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right">
+
+                    <Ellipse.Fill>
+                        <ImageBrush Stretch="Uniform" ImageSource="{Binding ContactPhoto}"></ImageBrush>
+                    </Ellipse.Fill>
+                    
+                    
+                    <!--Also hide profile photo if the IsMeAddStatus = true-->
+                    <Ellipse.Style>
+                        <Style TargetType="{x:Type Ellipse}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMeAddStatus}" Value ="True">
+                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+
+                </Ellipse>
+                
+                <!--Contact Name-->
+                <TextBlock
+                    Grid.Row="2"
+                    Text="{Binding ContactName, TargetNullValue = Add}"
+                    TextTrimming="CharacterEllipsis"
+                    TextAlignment="Center">
+                
+                </TextBlock>
+
+                
+            </Grid>
+            
+            
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ItemsControl 
+        ItemTemplate="{StaticResource thumbsTemplate}"
+        ItemsSource="{Binding statusThumbsCollection, UpdateSourceTrigger=PropertyChanged}">
+
+        <ItemsControl.DataContext>
+            <viewmodels:ViewModel></viewmodels:ViewModel>
+        </ItemsControl.DataContext>
+        
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal"></StackPanel>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+    </ItemsControl>
+    
+</UserControl>

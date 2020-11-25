@@ -3,10 +3,186 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Chatex"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:Chatex" 
+        xmlns:customcontrols="clr-namespace:Chatex.CustomerControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-       
-    </Grid>
+        x:Name="mainWindow"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontSize="15" 
+        Height="460" 
+        Width="860"
+        Title="Chatex"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen">
+    
+    <!--Structuring MainWindow-->
+    <Border CornerRadius="12" Background="WhiteSmoke">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition ></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                
+                <!--Collum for contact chat list-->
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                
+                <!--Conversation-->
+                <ColumnDefinition></ColumnDefinition>
+                
+                <!--Profile info-->
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <!--Title Bar-->
+            <Border 
+                Background="{StaticResource PrimaryHueDarkBrush}"
+                CornerRadius="10 10 0 0 "
+                Grid.ColumnSpan="3"
+                Height="40"
+                MouseDown="Border_MouseDown">
+
+                <Grid>
+                    <TextBlock
+                        Text="{Binding Title, ElementName=mainWindow}"
+                        HorizontalAlignment="Left"
+                        Margin="10 0"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        FontSize="20"
+                        FontWeight="Bold"
+                    />
+                    
+                    <!--Window Buttons-->
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        
+
+                        <Button x:Name="buttonMinimize"
+                                
+                                Background ="{x:Null}"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                Width="30" Height="30"
+                                Margin="5"
+                                Click="buttonMinimize_Click">
+                            
+                            <materialDesign:PackIcon Kind="WindowMinimize" Foreground="White"></materialDesign:PackIcon>
+                        </Button>
+
+                        <Button x:Name="buttonMaximaze"
+                                
+                                Background ="{x:Null}"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                Width="30" Height="30"
+                                Margin="5"
+                                Click="buttonMaximaze_Click">
+                            <materialDesign:PackIcon Kind="WindowMaximize" Foreground="White" HorizontalContentAlignment="Center"></materialDesign:PackIcon>
+                        </Button>
+
+                        <Button x:Name="buttonClose"
+                                Margin="5"
+                                Background ="{x:Null}"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                Width="30" 
+                                Height="30"
+                                
+
+                                Click="buttonClose_Click">
+                            <materialDesign:PackIcon Kind="Close" Foreground="White" ></materialDesign:PackIcon>
+                        </Button>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
+
+            <Grid Grid.Row="1" MinWidth=" 300">
+                <Grid.RowDefinitions>
+
+                    <!--Title & search option-->
+                    <RowDefinition Height="Auto"></RowDefinition>
+
+                    <!--Search box-->
+                    <RowDefinition Height="60"></RowDefinition>
+
+                    <!--Status-->
+                    <RowDefinition Height="Auto"></RowDefinition>
+
+                    <!--Chats List-->
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions >
+
+                        <!--Blank-->
+                        <ColumnDefinition MaxWidth="300"></ColumnDefinition>
+
+                        <!--Search button-->
+                        <ColumnDefinition Width="40" ></ColumnDefinition>
+
+                        <!--More option Button-->
+                        <ColumnDefinition Width="Auto" ></ColumnDefinition>
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBox Margin="20 10" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="SEARCH CHATS" 
+                             Foreground="Black">
+
+                    </TextBox>
+
+                    <!--Search button-->
+                    <Button Grid.Column="1"
+                            x:Name="buttonChatSearchButton"
+                            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                            Background="{x:Null}">
+                        <materialDesign:PackIcon Kind="Search" Foreground="{StaticResource PrimaryHueDarkBrush}">
+
+                        </materialDesign:PackIcon>
+                    </Button>
+
+                    <!--More options Popup menu-->
+                    <ToggleButton
+                        Grid.Column="2"
+                        x:Name="buttonMoreOptions"
+                        Margin="10 0"
+                        Style="{StaticResource MaterialDesignSwitchDarkToggleButton}">
+                    </ToggleButton>
+
+                </Grid>
+
+                <!--#regions SearchBox-->
+                <TextBox 
+                    Grid.Row="1"
+                    Margin="10"
+                    Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" materialDesign:HintAssist.Hint="Search Text" 
+                    BorderThickness="0"
+                    Name="searchQuery">
+                </TextBox>
+                <!--#end region-->
+                
+                
+                <!--#region status Thumbnails-->
+                <customcontrols:StatusThumbs 
+                    Grid.Row="2">
+                    
+                </customcontrols:StatusThumbs>
+                <!--#end region-->
+
+
+
+
+
+            </Grid>
+
+        </Grid>
+    </Border>
 </Window>
