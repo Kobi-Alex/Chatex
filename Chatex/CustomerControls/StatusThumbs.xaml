@@ -12,7 +12,7 @@
             <!--Ellipse-->
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
@@ -33,10 +33,10 @@
 
                     <Ellipse
                     x:Name="innerEllipse"
-                    Margin="5 0"
+                    Margin="8 0"
                     Width="48"
                     Height="48"
-                    Stretch="Uniform"
+                    Stretch="UniformToFill"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     >
@@ -72,13 +72,14 @@
                     HorizontalAlignment="Center"
                     Stretch="Fill">
 
-                        <Path.Data>
+                        <!--TO DO plus svg-->
+                        <!--<Path.Data>
                             <PathGeometry>
                                 <PathGeometry.Figures>
-                                    M 0,10 L10,0 20,10 10,3Z
+                                    M 0,10 L10,10 10,10 10,13Z
                                 </PathGeometry.Figures>
                             </PathGeometry>
-                        </Path.Data>
+                        </Path.Data>-->
                         <Path.Style>
                             <Style TargetType="{x:Type Path}">
                                 <Style.Triggers>
@@ -98,16 +99,17 @@
                 <!--Contact profile ellipse-->
                 <Ellipse
                     x:Name="contactPhotoEllipse"
+                    Margin="5 0 0 10"
                     Width="26"
                     Height="26"
-                    Stretch="Uniform"
+                    Stretch="UniformToFill"
                     StrokeThickness="2"
                     Stroke="#dce1de"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right">
 
                     <Ellipse.Fill>
-                        <ImageBrush Stretch="Uniform" ImageSource="{Binding ContactPhoto}"></ImageBrush>
+                        <ImageBrush Stretch="UniformToFill" ImageSource="{Binding ContactPhoto}"></ImageBrush>
                     </Ellipse.Fill>
                     
                     
