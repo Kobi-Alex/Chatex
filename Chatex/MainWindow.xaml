@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Chatex" 
-        xmlns:customcontrols="clr-namespace:Chatex.CustomerControls"
+        xmlns:customcontrols="clr-namespace:Chatex.CustomerControls" xmlns:viewmodels="clr-namespace:Chatex.ViewModels"
         mc:Ignorable="d"
         x:Name="mainWindow"
         AllowsTransparency="True"
@@ -18,9 +18,20 @@
         WindowStyle="None"
         WindowStartupLocation="CenterScreen">
 
+    <Window.DataContext>
+        <viewmodels:ViewModel></viewmodels:ViewModel>
+    </Window.DataContext>
+    
     <Window.Resources>
+
+        <!--<Style x:Key="ContactInfoButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"></Setter>
+            <Setter Property="BorderBrush" Value="Transparent"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+        </Style>-->
+        
         <ControlTemplate x:Key="ContactInfoButtonTemplate" TargetType="{x:Type Button}">
-            <Grid VerticalAlignment="Center" Height="40" >
+            <Grid VerticalAlignment="Center" Height="60" >
                 <Grid.ColumnDefinitions>
                     <!--Profile photo-->
                     <ColumnDefinition Width="75"></ColumnDefinition>
@@ -30,7 +41,7 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Border Width="40" Height="40" CornerRadius="10" BorderBrush="White" BorderThickness="0.6">
+                <Border Width="60" Height="60" CornerRadius="10" BorderBrush="White" BorderThickness="0.6">
                     <Border.Background>
                         <ImageBrush
                             ImageSource="{Binding ContactPhoto,  FallbackValue= /Assets/brain.jpg, TargetNullValue=/Assets/brain.jpg, UpdateSourceTrigger=PropertyChanged}"
@@ -40,11 +51,11 @@
                 </Border>
 
                 <Grid
-                    Grid.Column="1">
+                    Grid.Column="1"
+                    Margin="10">
 
                     <TextBlock
                         Foreground="Black">
-                        
                         <!--name-->
                         <Run 
                             Text="{Binding ContactName, FallbackValue='Contact Name', TargetNullValue='Contact Name' ,UpdateSourceTrigger=PropertyChanged}"
@@ -233,7 +244,6 @@
                 <!--#endregion-->
             </Grid>
 
-            
             <!--#region Conversation Screen-->
             <Grid 
                 Grid.Column="1"
@@ -243,13 +253,10 @@
 
                     <!--Conversation header-->
                     <RowDefinition Height="Auto"></RowDefinition>
-
                     <!--Body-->
                     <RowDefinition></RowDefinition>
-
                     <!--Reply-->
                     <RowDefinition Height="Auto"></RowDefinition>
-
                     <!--Send Message Box-->
                     <RowDefinition Height="Auto"></RowDefinition>
 
@@ -257,44 +264,42 @@
 
 
                 <Grid 
-                        Height="75"
-                        Margin="0 0 15 0"
+                        Height="80"
+                        Margin="20 10 15 15"
                         VerticalAlignment="Center"
                         >
+
                     <Grid.ColumnDefinitions>
 
                         <!--Contact header name& Online Status-->
                         <ColumnDefinition ></ColumnDefinition>
-
                         <!--Video call button-->
                         <ColumnDefinition Width="50"></ColumnDefinition>
-
                         <!--CallButton-->
                         <ColumnDefinition Width="50"></ColumnDefinition>
-
-
                         <!--More options-->
                         <ColumnDefinition Width="50"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-
                     <!--Contact Info Button-->
                     <Button
-                        Template="{StaticResource ContactInfoButtonTemplate}"></Button>
-                   
+                        Template="{StaticResource ContactInfoButtonTemplate}"
+                        Height="Auto">
+                    </Button>
+
                     <!--Video call Button-->
                     <Button
                         Grid.Column="1"
                         Style="{StaticResource  MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon Kind="Video" ></materialDesign:PackIcon>
                     </Button>
-                    
+
                     <!--Call Button-->
                     <Button
                         Grid.Column="2"
                         Style="{StaticResource  MaterialDesignFloatingActionMiniDarkButton}">
                         <materialDesign:PackIcon Kind="Call" ></materialDesign:PackIcon>
-                        
+
                     </Button>
 
                     <!--More options Button-->
@@ -304,12 +309,89 @@
                         >
                         <materialDesign:PackIcon Kind="MoreVert"></materialDesign:PackIcon>
                     </ToggleButton>
+
                 </Grid>
+
 
                 <!--Conversation Messages Body-->
                 <customcontrols:Conversation Grid.Row="1"></customcontrols:Conversation>
+
+                <!--#region TextBox to send message-->
+                <Grid Grid.Row="3">
+                    <Border
+                        Background="{StaticResource MaterialDesignBackground}"
+                        CornerRadius="10"
+                        Height="50"
+                        Margin="15 8">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <!--TextBox-->
+                                <ColumnDefinition></ColumnDefinition>
+                                <!--Attachment Button-->
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox 
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Padding="12 0"
+                                Text="{Binding MessageText}"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                Style="{StaticResource MaterialDesignTextBox}"
+                                x:Name="MessageBox">
+                                <!--To-DO Intup Binding-->
+                                
+                            </TextBox>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                Orientation="Horizontal"
+                                >
+                                <!--To-Do Commands-->
+                                
+                                <Button
+                                    x:Name="InsertPhoto"
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                    Background="{x:Null}"
+                                    Margin="3"
+                                    >
+                                    <materialDesign:PackIcon Kind="InsertPhoto" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
+                                </Button>
+                                <Button
+                                    x:Name="InsertAudioFile"
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                    Background="{x:Null}"
+                                    Margin="3"
+                                    >
+                                    <materialDesign:PackIcon Kind="Microphone" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
+                                </Button>
+
+                                <Button
+                                    x:Name="SendMessage"
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                    Margin="10 0 5 0"
+                                    >
+                                    <materialDesign:PackIcon Kind="Send" ></materialDesign:PackIcon>
+                                </Button>
+
+
+                            </StackPanel>
+                            
+                        </Grid>
+
+                    </Border>
+                    
+                </Grid>
+
+                <!--#endregion-->   
+                
             </Grid>
-            <!--#endregion-->
+            <!--#endregion-->   
+            
+            <!--Contact Info-->
+            
         </Grid>
     </Border>
 </Window>

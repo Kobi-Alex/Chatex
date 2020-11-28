@@ -3,31 +3,247 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Chatex.CustomerControls"
+             xmlns:local="clr-namespace:Chatex.CustomerControls" xmlns:viewmodels="clr-namespace:Chatex.ViewModels"
              mc:Ignorable="d" 
              Height="Auto"
              Width="Auto">
+
+
+    <!--<UserControl.DataContext>
+        <viewmodels:ViewModel></viewmodels:ViewModel>
+    </UserControl.DataContext>-->
+
+    <UserControl.Resources>
+
+        <!--Style for message text-->
+        <Style x:Key="MessageTextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="13"></Setter>
+            <Setter Property="FontWeight" Value="SemiBold"></Setter>
+            <Setter Property="Margin" Value="10"></Setter>
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="TextWrapping" Value="Wrap"></Setter>
+            <!--To wrap text to the next line-->
+            <Style.Triggers>
+
+                <DataTrigger Binding="{Binding IsMessageReceived}" Value="True">
+                    <Setter Property="Text" Value="{Binding ReceivedMessage}"></Setter>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding IsMessageReceived}" Value="False">
+                    <Setter Property="Text" Value="{Binding SentMessage}"></Setter>
+                </DataTrigger>
+
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="ItemTemplate">
+
+            <Button>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+                        <Setter Property="Height" Value="Auto"></Setter>
+                        <Setter Property="Padding" Value="4,1"></Setter>
+                        <Setter Property="Margin" Value="10"></Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+                        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                        <Setter Property="Background" Value="Transparent"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border
+                                         Background="{TemplateBinding Background}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Padding="{TemplateBinding Padding}"
+                                         SnapsToDevicePixels="True"
+                                         x:Name="border">
+
+
+                                        <!--Model First-->
+                                        <Grid>
+
+                                            <Grid.RowDefinitions>
+
+                                                <!--Reply babble-->
+                                                <RowDefinition Height="Auto"></RowDefinition>
+
+                                                <!--Message bubble-->
+                                                <RowDefinition></RowDefinition>
+
+                                                <!--MessageTime-->
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                            </Grid.RowDefinitions>
+
+
+                                            <Grid 
+                                                Grid.Row="1">
+
+                                                <Grid.ColumnDefinitions>
+
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+
+                                                    <!--Collum massage Bubble-->
+                                                    <ColumnDefinition></ColumnDefinition>
+
+                                                    <!--collum reply button-->
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+
+                                                </Grid.ColumnDefinitions>
+
+
+                                                <!--Message Bubble-->
+                                                <Border
+                                                    Grid.Column="1"
+                                                    Height="Auto"
+                                                    MinHeight="45"
+                                                    Width="Auto"       
+                                                    VerticalAlignment="Center">
+
+                                                    <Border.Style>
+                                                        <!--To change color of our bubble on message receive and message sent-->
+                                                        <Style TargetType="{x:Type Border}">
+
+                                                            <!--if msg is received-->
+                                                            <Setter Property="CornerRadius" Value="16 16 20 0"></Setter>
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryHueMidBrush}"></Setter>
+                                                            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsMessageReceived}" Value="False">
+                                                                    <Setter Property="CornerRadius" Value="16 16 0 20"></Setter>
+                                                                    <Setter Property="Background" Value="Gray"></Setter>
+                                                                    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                            
+                                                        </Style>
+                                                    </Border.Style>
+
+                                                    <!--Message Text-->
+
+                                                    <!--Dockpanel is used here to expand according to message length and max width is limit to expand to..-->
+                                                    <DockPanel
+                                                        MaxHeight="450">
+                                                        <TextBlock
+                                                             Style="{StaticResource MessageTextStyle}">
+                                                        </TextBlock>
+                                                    </DockPanel>
+                                                    
+                                                </Border>
+
+                                                <!--Reply Button-->
+                                                <!--Button 
+                                        
+                                                    Visibility="Visible"
+                                                    Grid.Column="2"
+                                                    Style="{StaticResource MaterialDesignIconButton}">
+
+                                                </Button>-->
+
+
+                                            </Grid>
+
+                                            <TextBlock
+                                                Grid.Row="2">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                                        <Setter Property="FontSize" Value="10"></Setter>
+                                                        <Style.Triggers>
+
+                                                            <!--if msg is receied show time on left-->
+                                                            <DataTrigger Binding="{Binding  IsMessageReceived}" Value="True">
+                                                                <Setter Property="Text" Value="{Binding MsgReceivedOn}"></Setter>
+                                                                <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                                                                <Setter Property="Margin" Value="0 5 5 0"></Setter>
+                                                            </DataTrigger>
+
+                                                            <!--else on right-->
+                                                            <DataTrigger Binding="{Binding  IsMessageReceived}" Value="False">
+                                                                <Setter Property="Text" Value="{Binding MsgSentOn}"></Setter>
+                                                                <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+                                                                <Setter Property="Margin" Value="0 5 5 0"></Setter>
+                                                            </DataTrigger>
+
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <!--Style for Button-->
+        </DataTemplate>
+    </UserControl.Resources>
+
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <!--<RowDefinition Height="Auto"></RowDefinition>-->
+
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Search box-->
+        <!--<Border
+            Background="#dce1de"
+            CornerRadius="15"
+            Margin="10"
+            Height="45"
+            x:Name="searchBoxBorder"
+            FocusManager.FocusedElement="{Binding ElementName=searchQuery}"
+            >
+
+            <TextBox
+                Background="Transparent"
+                BorderThickness="0"
+                Name="searchQuery"
+                Padding="12 0"
+                Text="Search text"
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Stretch"
+                >
+            </TextBox>
+
+        </Border>-->
+
+
+        <!--body-->
+        <!--To Do Add attached property to Auto Scroll to bottom-->
+
         <ScrollViewer
             Background="WhiteSmoke"
-            HorizontalScrollBarVisibility="Disabled">
+            HorizontalScrollBarVisibility="Disabled"
+            Grid.Row="0">
 
-            <ItemsControl>
+            <ItemsControl
+                ItemsSource="{Binding Conversations, UpdateSourceTrigger=PropertyChanged}"
+                ItemTemplate="{StaticResource ItemTemplate}"
+                Margin="15 0 0 0"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                >
+
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        
                         <!--To Do: Add animation-->
-                        <StackPanel></StackPanel>
+                        <StackPanel>
+
+                        </StackPanel>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button></Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        
     </Grid>
 </UserControl>

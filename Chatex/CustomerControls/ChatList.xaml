@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Chatex.CustomerControls" xmlns:viewmodels="clr-namespace:Chatex.ViewModels" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" MinWidth="320">
+             mc:Ignorable="d" MinWidth="320"
+             x:Name="_Chats">
 
     <UserControl.Resources>
         <DataTemplate x:Key="ChatButtonItemTemplate">
@@ -19,6 +20,8 @@
                         <Setter Property="VerticalAlignment" Value="Center"></Setter>
                         <Setter Property="Background" Value="Transparent"></Setter>
                         <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="Command" Value="{Binding DataContext.GetSelectedChatCommand, ElementName=_Chats, UpdateSourceTrigger=PropertyChanged}"></Setter>
+                        <Setter Property="CommandParameter" Value="{Binding}"></Setter>
                         <Setter Property="Content" Value="{Binding ContactName}"></Setter>
 
                         <!--it is optional-->
@@ -39,15 +42,13 @@
                                         >
                                         <Grid>
                                             <Grid.RowDefinitions>
-
+                                                
                                                 <!--Contain contactname, photo, message, message time-->
                                                 <RowDefinition Height="Auto"></RowDefinition>
 
                                                 <!--Contain options(arhive chat, pin chat, delete etc.)-->
                                                 <RowDefinition Height="Auto"></RowDefinition>
-
-
-
+                                                
                                             </Grid.RowDefinitions>
 
                                             <!--region Contact details-->
@@ -71,22 +72,12 @@
                                                 <Border Width="40" Height="40" CornerRadius="10" BorderBrush="White" BorderThickness="0.6">
                                                     <Border.Background>
                                                         <ImageBrush 
+                                                            Stretch="UniformToFill"
                                                             ImageSource="{Binding ContactPhoto, FallbackValue=/Assets/brain.jpg, TargetNullValue=/Assets/brain.jpg, UpdateSourceTrigger=PropertyChanged}"
-                                                            Stretch="UniformToFill"></ImageBrush>
+                                                            >
+                                                        </ImageBrush>
                                                     </Border.Background>
                                                 </Border>
-
-                                                <!--<Ellipse Width="50" Height="50">
-                                                    <Ellipse.Fill>
-                                                        <ImageBrush 
-                                                            Stretch="UniformToFill"
-                                                            ImageSource="{Binding ContactPhoto}"
-                                                            >
-
-                                                        </ImageBrush>
-                                                    </Ellipse.Fill>
-                                                </Ellipse>-->
-
 
                                                 <!--Contact name & message-->
                                                 <Grid Grid.Column="1"
@@ -106,7 +97,6 @@
                                                         FontSize="14">
 
                                                         <TextBlock.Style>
-
                                                             <Style TargetType="{x:Type TextBlock}">
                                                                 <Setter Property="FontWeight" Value="SemiBold"></Setter>
                                                                 <Style.Triggers>
@@ -117,7 +107,6 @@
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-
                                                         </TextBlock.Style>
                                                     </TextBlock>
 
@@ -154,14 +143,14 @@
                                                     </TextBlock>
                                                 </Grid>
 
-                                                <Separator
+                                                <!--<Separator
                                                     Grid.Column="1"
                                                     Grid.ColumnSpan="2"
                                                     BorderThickness=".5"
                                                     BorderBrush="WhiteSmoke"
                                                     VerticalAlignment="Bottom">
 
-                                                </Separator>
+                                                </Separator>-->
                                                 <!--#endregion-->
 
                                             </Grid>
@@ -213,7 +202,6 @@
                                             <!--end region-->
 
                                         </Grid>
-
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -224,8 +212,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    
-    
+     
     <!--TO DO scrolbar style--> 
     
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -257,9 +244,9 @@
                 ItemsSource="{Binding Chats}"
                 ItemTemplate="{StaticResource ChatButtonItemTemplate}"
                 Padding="0,10">
-                    <ItemsControl.DataContext>
+                    <!--<ItemsControl.DataContext>
                         <viewmodels:ViewModel></viewmodels:ViewModel>
-                    </ItemsControl.DataContext>
+                    </ItemsControl.DataContext>-->
                 </ItemsControl>
             </StackPanel>
         </Grid>
