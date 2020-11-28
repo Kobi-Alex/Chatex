@@ -391,6 +391,12 @@
             <!--#endregion-->   
             
             <!--Contact Info-->
+            <customcontrols:ContactInfo
+                x:Name="ContactInfo"
+                Grid.Row="1"
+                Grid.Column="2">
+                
+            </customcontrols:ContactInfo>
             
         </Grid>
     </Border>

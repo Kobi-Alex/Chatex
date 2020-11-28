@@ -67,6 +67,9 @@
     <Compile Include="CustomerControls\ChatList.xaml.cs">
       <DependentUpon>ChatList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomerControls\ContactInfo.xaml.cs">
+      <DependentUpon>ContactInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomerControls\Conversation.xaml.cs">
       <DependentUpon>Conversation.xaml</DependentUpon>
     </Compile>
@@ -74,6 +77,10 @@
     <Compile Include="Models\ChatLisData.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="CustomerControls\ChatList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomerControls\ContactInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
