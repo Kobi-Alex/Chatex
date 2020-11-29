@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ChatexDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ContactName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContactPhoto" Type="nvarchar(max)" />
+          <Property Name="StatusImage" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ChatList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountID" Type="int" Nullable="false" />
+          <Property Name="FriendAccountID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Conversation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountID" Type="int" Nullable="false" />
+          <Property Name="LastOnline" Type="date" Nullable="false" />
+          <Property Name="ReceivedMsgs" Type="nvarchar(max)" />
+          <Property Name="MsgReseivedOn" Type="datetime" />
+          <Property Name="IsReplied" Type="bit" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="SentMsg" Type="nvarchar(max)" />
+          <Property Name="MsgSentOn" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_PP_Conversation">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Conversation" Type="Self.Conversation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conversation">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_FriendAccount">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="ChatList" Type="Self.ChatList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatList">
+              <PropertyRef Name="FriendAccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_Project">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="ChatList" Type="Self.ChatList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatList">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ChatexDBModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChatList" EntityType="Self.ChatList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Conversation" EntityType="Self.Conversation" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_PP_Conversation" Association="Self.FK_PP_Conversation">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Conversation" EntitySet="Conversation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_FriendAccount" Association="Self.FK_PP_FriendAccount">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="ChatList" EntitySet="ChatList" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_Project" Association="Self.FK_PP_Project">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="ChatList" EntitySet="ChatList" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ChatexDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContactName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContactPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Conversation" Relationship="Self.FK_PP_Conversation" FromRole="Account" ToRole="Conversation" />
+          <NavigationProperty Name="ChatList" Relationship="Self.FK_PP_FriendAccount" FromRole="Account" ToRole="ChatList" />
+          <NavigationProperty Name="ChatList1" Relationship="Self.FK_PP_Project" FromRole="Account" ToRole="ChatList" />
+        </EntityType>
+        <EntityType Name="ChatList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountID" Type="Int32" Nullable="false" />
+          <Property Name="FriendAccountID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_PP_FriendAccount" FromRole="ChatList" ToRole="Account" />
+          <NavigationProperty Name="Account1" Relationship="Self.FK_PP_Project" FromRole="ChatList" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="Conversation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountID" Type="Int32" Nullable="false" />
+          <Property Name="LastOnline" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ReceivedMsgs" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MsgReseivedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsReplied" Type="Boolean" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="SentMsg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MsgSentOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_PP_Conversation" FromRole="Conversation" ToRole="Account" />
+        </EntityType>
+        <Association Name="FK_PP_Conversation">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Conversation" Type="Self.Conversation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conversation">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_FriendAccount">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="ChatList" Type="Self.ChatList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatList">
+              <PropertyRef Name="FriendAccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_Project">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="ChatList" Type="Self.ChatList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChatList">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ChatexDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Account" EntityType="Self.Account" />
+          <EntitySet Name="ChatList" EntityType="Self.ChatList" />
+          <EntitySet Name="Conversation" EntityType="Self.Conversation" />
+          <AssociationSet Name="FK_PP_Conversation" Association="Self.FK_PP_Conversation">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Conversation" EntitySet="Conversation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_FriendAccount" Association="Self.FK_PP_FriendAccount">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="ChatList" EntitySet="ChatList" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_Project" Association="Self.FK_PP_Project">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="ChatList" EntitySet="ChatList" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ChatexDBModelStoreContainer" CdmEntityContainer="ChatexDBEntities">
+          <EntitySetMapping Name="Account">
+            <EntityTypeMapping TypeName="ChatexDBModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="ContactPhoto" ColumnName="ContactPhoto" />
+                <ScalarProperty Name="StatusImage" ColumnName="StatusImage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChatList">
+            <EntityTypeMapping TypeName="ChatexDBModel.ChatList">
+              <MappingFragment StoreEntitySet="ChatList">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="FriendAccountID" ColumnName="FriendAccountID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Conversation">
+            <EntityTypeMapping TypeName="ChatexDBModel.Conversation">
+              <MappingFragment StoreEntitySet="Conversation">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="LastOnline" ColumnName="LastOnline" />
+                <ScalarProperty Name="ReceivedMsgs" ColumnName="ReceivedMsgs" />
+                <ScalarProperty Name="MsgReseivedOn" ColumnName="MsgReseivedOn" />
+                <ScalarProperty Name="IsReplied" ColumnName="IsReplied" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="SentMsg" ColumnName="SentMsg" />
+                <ScalarProperty Name="MsgSentOn" ColumnName="MsgSentOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

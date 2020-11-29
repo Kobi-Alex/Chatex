@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="70772c2177b34d9e874604df4bef206f" Name="Diagram1">
+        <EntityTypeShape EntityType="ChatexDBModel.Account" Width="1.5" PointX="0.75" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ChatexDBModel.ChatList" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ChatexDBModel.Conversation" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+        <AssociationConnector Association="ChatexDBModel.FK_PP_Conversation" ManuallyRouted="false" />
+        <AssociationConnector Association="ChatexDBModel.FK_PP_FriendAccount" ManuallyRouted="false" />
+        <AssociationConnector Association="ChatexDBModel.FK_PP_Project" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

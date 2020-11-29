@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +21,12 @@ namespace Chatex
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public TcpClient Client; 
+
+        public MainWindow(TcpClient client)
         {
             InitializeComponent();
+            this.Client = client;
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
