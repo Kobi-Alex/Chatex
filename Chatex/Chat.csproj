@@ -45,6 +45,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -63,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\CommandViewModel.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="CustomerControls\ChatList.xaml.cs">
       <DependentUpon>ChatList.xaml</DependentUpon>
@@ -72,6 +76,9 @@
     </Compile>
     <Compile Include="CustomerControls\Conversation.xaml.cs">
       <DependentUpon>Conversation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomerWindows\StartWindow.xaml.cs">
+      <DependentUpon>StartWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ChatConversation.cs" />
     <Compile Include="Models\ChatLisData.cs" />
@@ -89,6 +96,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomerControls\StatusThumbs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomerWindows\StartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,7 @@ namespace Chatex.Models
 {
     public class StatusDataModel
     {
+        public int Id { get; set; } 
         public string ContactName { get; set; }
         public Uri ContactPhoto { get; set; }
         public Uri StatusImage {get;set;}

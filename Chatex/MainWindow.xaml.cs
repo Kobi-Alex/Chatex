@@ -49,5 +49,10 @@ namespace Chatex
         {
             Application.Current.Shutdown();
         }
+
+        private void OpenContactInfoWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ContactInfoScreen.Visibility = Visibility.Visible;
+        }
     }
 }

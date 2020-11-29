@@ -156,6 +156,8 @@
                                             </Grid>
                                             <!--#endregion-->
 
+                                            
+                                            
                                             <!--Region options-->
                                             <Grid
                                                     Grid.Row="1"
@@ -168,18 +170,72 @@
 
                                                 <UniformGrid Grid.Column="1" Columns="4" Margin="5">
 
+                                                    
+                                                    <!--Pin / Un Pin Chat Button -->
                                                     <Button 
                                                             Width="25"
                                                             Height="25"
-                                                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
-                                                        <materialDesign:PackIcon Kind="Pin" ></materialDesign:PackIcon>
+                                                            CommandParameter="{Binding}">
+
+                                                        <Button.Style>
+
+                                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+
+                                                                <Setter Property="Content">
+                                                                    <Setter.Value>
+                                                                        <materialDesign:PackIcon Kind="Pin"></materialDesign:PackIcon>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="Command" Value="{Binding DataContext.PinChatCommand, ElementName=_Chats}"></Setter>
+
+                                                                <!--style when Chat is pinned-->
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding ChatIsPinned}" Value="True">
+                                                                        <Setter Property="Content">
+                                                                            <Setter.Value>
+                                                                                <materialDesign:PackIcon Kind="PinOff"></materialDesign:PackIcon>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                        <Setter Property="Command" Value="{Binding DataContext.UnPinChatCommand, ElementName=_Chats}"></Setter>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                
+                                                            </Style>
+                                                        </Button.Style>
                                                     </Button>
 
-                                                    <Button 
-                                                            Width="25"
-                                                            Height="25"
-                                                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
-                                                        <materialDesign:PackIcon Kind="Archive" ></materialDesign:PackIcon>
+                                                    
+                                                    <Button
+                                                        Width="25"
+                                                        Height="25"
+                                                        CommandParameter="{Binding}">
+
+                                                        <!--To show Arhive icon and Command to unarhive wen the chat is pinned or unpinned-->
+                                                        <Button.Style>
+                                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniDarkButton}">
+
+                                                                <!--Normal Chat Style-->
+                                                                <Setter Property="Content">
+                                                                    <Setter.Value>
+                                                                        <materialDesign:PackIcon Kind="Archive"></materialDesign:PackIcon>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="Command" Value="{Binding DataContext.AriveChatCommand, ElementName=_Chats}"></Setter>
+
+                                                                <!--Style wnen Chat is pinned-->
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding ChatIsPinned}" Value="True">
+                                                                        <Setter Property="Content">
+                                                                            <Setter.Value>
+                                                                                <materialDesign:PackIcon Kind="ArchiveOutline"></materialDesign:PackIcon>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                        <Setter Property="Command" Value="{Binding DataContext.UnArchiveChatCommand, ElementName=_Chats}"></Setter>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+
+                                                            </Style>
+                                                        </Button.Style>
                                                     </Button>
 
                                                     <Button 
@@ -222,32 +278,62 @@
             <StackPanel Margin="10 0 0 0">
 
                 <!--Title-->
+                
+                <!--Pinned Chat-->
                 <StackPanel
-                Orientation="Horizontal">
+                    Orientation="Horizontal">
 
                     <Label
-                    Style="{StaticResource MaterialDesignLabel}">
-                        <materialDesign:PackIcon Kind="Chat" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
+                        Style="{StaticResource MaterialDesignLabel}"
+                        >
+                        <materialDesign:PackIcon Kind="Pin" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
                     </Label>
 
                     <TextBlock 
-                    Text="Chats"
-                    FontWeight="SemiBold"
-                    
-                    VerticalAlignment="Center">
+                        Text="Pinned"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center">
                     </TextBlock>
+                    
                 </StackPanel>
 
 
                 <!--ChatList-->
                 <ItemsControl 
-                ItemsSource="{Binding Chats}"
-                ItemTemplate="{StaticResource ChatButtonItemTemplate}"
-                Padding="0,10">
+                    ItemsSource="{Binding FilteredPinnedChats}"
+                    ItemTemplate="{StaticResource ChatButtonItemTemplate}"
+                    Padding="0,10">
+                </ItemsControl>
+
+                
+                <!--All Chats-->
+                <StackPanel
+                    Orientation="Horizontal">
+
+                    <Label
+                        Style="{StaticResource MaterialDesignLabel}"
+                        
+                        >
+                        <materialDesign:PackIcon Kind="Chat" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
+                    </Label>
+
+                    <TextBlock 
+                        Text="Chats"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center">
+                    </TextBlock>
+
+                </StackPanel>
+                
+                <ItemsControl 
+                    ItemsSource="{Binding FilteredChats}"
+                    ItemTemplate="{StaticResource ChatButtonItemTemplate}"
+                    Padding="0,10">
                     <!--<ItemsControl.DataContext>
                         <viewmodels:ViewModel></viewmodels:ViewModel>
                     </ItemsControl.DataContext>-->
                 </ItemsControl>
+
             </StackPanel>
         </Grid>
     </ScrollViewer>

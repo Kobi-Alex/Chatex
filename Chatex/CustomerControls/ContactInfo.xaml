@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Chatex.CustomerControls" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
             <!--close contact Button-->
             <RowDefinition Height="75"></RowDefinition>
@@ -21,8 +21,12 @@
             Height="30"
             Background="{x:Null}"
             Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+            x:Name="CloseContactInfoButton"
+            Click="CloseContactInfoButton_Click"
             >
             <materialDesign:PackIcon Kind="Close" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
+            
+            
         </Button>
 
         <ScrollViewer
@@ -40,7 +44,7 @@
                     Height="150"
                     Stretch="Uniform">
                     <Ellipse.Fill>
-                        <ImageBrush ImageSource="/Assets/brain.jpg"
+                        <ImageBrush ImageSource="{Binding ContactPhoto}"
                                     Stretch="UniformToFill"></ImageBrush>
                     </Ellipse.Fill>
                     
@@ -60,9 +64,22 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     Text="{Binding LastSeen, FallbackValue='Last seen', TargetNullValue='Last seen', UpdateSourceTrigger=PropertyChanged}">
-
                 </TextBlock>
 
+                <!--Contact Email-->
+                <TextBlock
+                    Margin="0 20 0 0"
+                    HorizontalAlignment="Left"
+                    FontSize="15"
+                    FontWeight="SemiBold"
+                    Text="Contact">
+                    
+                </TextBlock>
+
+                <TextBlock
+                    Text="abc@gmail.com">
+                </TextBlock>
+                
             </StackPanel>
             
         </ScrollViewer>

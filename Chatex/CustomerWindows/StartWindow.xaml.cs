@@ -10,24 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Chatex.CustomerControls
+namespace Chatex.CustomerWindows
 {
     /// <summary>
-    /// Interaction logic for ContactInfo.xaml
+    /// Interaction logic for StartWindow.xaml
     /// </summary>
-    public partial class ContactInfo : UserControl
+    public partial class StartWindow : Window
     {
-        public ContactInfo()
+        public StartWindow()
         {
             InitializeComponent();
-        }
-
-        private void CloseContactInfoButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Visibility = Visibility.Collapsed;
         }
     }
 }

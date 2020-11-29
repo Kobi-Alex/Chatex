@@ -77,16 +77,16 @@
             </Grid>
         </ControlTemplate>
     </Window.Resources>
-    
-    
+     
 
     <!--Structuring MainWindow-->
     <Border CornerRadius="12" Background="WhiteSmoke">
-        <Grid>
+        <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition ></RowDefinition>
             </Grid.RowDefinitions>
+            
             <Grid.ColumnDefinitions>
 
                 <!--Collum for contact chat list-->
@@ -105,7 +105,8 @@
                 CornerRadius="10 10 0 0 "
                 Grid.ColumnSpan="3"
                 Height="40"
-                MouseDown="Border_MouseDown">
+                MouseDown="Border_MouseDown"
+                >
 
                 <Grid>
                     <TextBlock
@@ -164,7 +165,7 @@
 
             </Border>
 
-            <Grid Grid.Row="1" MinWidth=" 320">
+            <Grid Grid.Row="1" MinWidth=" 320" >
                 <Grid.RowDefinitions>
 
                     <!--Title & search option-->
@@ -227,7 +228,15 @@
                     Margin="10"
                     Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" materialDesign:HintAssist.Hint="Search Text" 
                     BorderThickness="0"
-                    Name="searchQuery">
+                    Name="searchQuery"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                    
+                    
+                    <TextBox.InputBindings>
+                        <!--key Bimding to Search on 'Enter' key press-->
+                        <KeyBinding Command="{Binding SearchCommand}" Key="Return"></KeyBinding>
+                    </TextBox.InputBindings>
+                    
                 </TextBox>
                 <!--#end region-->
 
@@ -306,6 +315,8 @@
                     <ToggleButton
                         Grid.Column="3"
                         Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                        x:Name="OpenContactInfoWindow"
+                        Click="OpenContactInfoWindow_Click"
                         >
                         <materialDesign:PackIcon Kind="MoreVert"></materialDesign:PackIcon>
                     </ToggleButton>
@@ -322,7 +333,8 @@
                         Background="{StaticResource MaterialDesignBackground}"
                         CornerRadius="10"
                         Height="50"
-                        Margin="15 8">
+                        Margin="15 8"
+                        >
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -389,12 +401,13 @@
                 
             </Grid>
             <!--#endregion-->   
-            
+             
             <!--Contact Info-->
             <customcontrols:ContactInfo
-                x:Name="ContactInfo"
+                x:Name="ContactInfoScreen"
                 Grid.Row="1"
-                Grid.Column="2">
+                Grid.Column="2"
+                >
                 
             </customcontrols:ContactInfo>
             
