@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using RequestsDLL;
+using ChatModelsDLL;
 
 namespace Server
 {
@@ -17,12 +18,14 @@ namespace Server
         private TcpListener server;
         private List<TcpClient> connectedClients;
         private string currentClientPort;
+        ChatexDBEntities chatexDBEntities = new ChatexDBEntities();
 
         public ChatServer(IPAddress serverIp, int port)
         {
             IPEndPoint serverEP = new IPEndPoint(serverIp, port);
             this.server = new TcpListener(serverEP);
             connectedClients = new List<TcpClient>();
+           // chatexDBEntities = new ChatexDBEntities();
         }
 
         public void Start()
@@ -36,7 +39,7 @@ namespace Server
                 {
                     this.connectedClients.Add(client);
                 }
-                Task.Run(() => AuthenticationMethodAsync(client));
+                Task.Run(() => ClientMethodAsync(client));
             }
         }
 
@@ -46,7 +49,6 @@ namespace Server
 
             NetworkStream dataStream = client.GetStream();
             BinaryReader reader = new BinaryReader(dataStream);
-
 
             while (true)
             {
@@ -60,26 +62,25 @@ namespace Server
 
                         currentClientPort = client.Client.RemoteEndPoint.ToString();
                         Console.WriteLine(client.Client.RemoteEndPoint.ToString());
+                        
                         //отримали дані
+                        ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
 
-
-
-                        //десеріалізували
-                        TypeRequest type = TypeRequest.authentication;
-
-                        switch (type)
+                        //logic Authentication
+                        if (serverRequest.TypeRequest == TypeRequest.authentication)
                         {
-                            //logic Authentication
-                            case TypeRequest.authentication:
-                                { 
+                            //var dataL = chatexDBEntities.Account.Find(serverRequest.Login);
+                            //var dataP = chatexDBEntities.Account.Find(serverRequest.Password);
 
-                                
-                                    ClientMethod(client);
-                                
-                                } break;
-                            default:
-                                break;
+                            //if (dataL != null && dataP != null)
+                            //{ 
+
+                            //    ClientMethod(client);
+                            //}
                         }
+                        else 
+                            break;
+
                     }
                 }
                 catch (IOException)
@@ -97,11 +98,10 @@ namespace Server
             }
         }
 
-        private void ClientMethod(TcpClient client)
+        private void ClientMethodAsync(TcpClient client)
         {
             NetworkStream dataStream = client.GetStream();
             BinaryReader reader = new BinaryReader(dataStream);
-
 
 
             while (true)
@@ -116,26 +116,47 @@ namespace Server
 
                         currentClientPort = client.Client.RemoteEndPoint.ToString();
                         Console.WriteLine(client.Client.RemoteEndPoint.ToString());
+
                         //отримали дані
+                        ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
 
-                        //десеріалізували
-                        //TypeRequest type = TypeRequest.authentication;
+                        //Logics 
+                        switch (serverRequest.TypeRequest)
+                        {
+                            case TypeRequest.authentication:
+                                {
+                                    string pass = (string)serverRequest.Data;
+                                    string login =chatexDBEntities.Account.Where(c => c.Password == pass).Select(s => s.Login).FirstOrDefault();
 
-                        //switch (type)
-                        //{
-                        //    //case TypeRequest.authentication:
-                        //    //    //логіка аутентифікації
+
+                                    if (login != null)
+                                    {
+                                       ///ServerRequest serverUnswer = new ServerRequest(portUser, TypeRequest.authentication, password);
+
+                                        serverRequest.Data = login;
+                                        buffer = ServerRequest.ObjectToByteArray(serverRequest);
 
 
+                                        //Task.Run(() => ResenderUnswerAuthenticationAsync(serverUnswer, client));
+                                    }
+                                    //else
+                                    //{
+                                    //    serverRequest.Data = login;
+                                    //    byte[] serverUnswer = ServerRequest.ObjectToByteArray(serverRequest);
 
-                        //    //    break;
-                        //    //case TypeRequest.authentication:
-                        //    //    //логіка отримання повідомлення
-                        //    //    break;
-                        //    //case TypeRequest.authentication:
-                        //    //    //логіка отримання повідомлення
-                        //    //    break;
-                        //}
+                                    //    // Task.Run(() => ResenderUnswerAuthenticationAsync(serverUnswer, client));
+                                    //    break;
+                                    //}
+
+                                }
+                                break;
+                                //case TypeRequest.authentication:
+                                //    логіка отримання повідомлення
+                                //    break;
+                                //case TypeRequest.authentication:
+                                //    логіка отримання повідомлення
+                                //    break;
+                        }
 
                         Task.Run(() => ResenderAsync(buffer));
                     }
@@ -155,15 +176,34 @@ namespace Server
             }
         }
 
+
+        public void ResenderUnswerAuthenticationAsync(object state, TcpClient client)
+        {
+            byte[] buffer = (byte[])state;
+
+            lock (this.locker)
+            {
+                if (client.Connected)
+                {
+                    BinaryWriter writer = new BinaryWriter(client.GetStream());
+                    writer.Write(buffer.Length);
+                    writer.Write(buffer);
+                    writer.Flush();
+                }             
+            }
+        }
+
+
+
         public void ResenderAsync(object state)
         {
             byte[] buffer = (byte[])state;
 
-           // ServerMEssage serverMEssage = ServerMEssage.ByteArrayToObject(buffer);
-           //int UserID = serverMEssage.Receiver;
-           int UserID = 7;
+            ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
 
-            string ReceiveIpAddress = $"127.0.0.1:{(UserID + 1024)}";
+           int port = serverRequest.Receiver;
+
+            string ReceiveIpAddress = $"127.0.0.1:{port}";
 
             lock (this.locker)
             {

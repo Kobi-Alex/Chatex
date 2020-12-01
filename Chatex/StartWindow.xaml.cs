@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,9 @@ namespace Chatex
 
         private TcpClient client;
 
+        private BinaryWriter writer;
+        private BinaryReader reader;
+
         public StartWindow()
         {
             InitializeComponent();
@@ -38,40 +42,107 @@ namespace Chatex
         {
             try
             {
-                //connect to server
+                //connect to server   
+
+
                 IPEndPoint clientEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), portUser);
                 client = new TcpClient(clientEP);
 
                 IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), portServer);
                 client.Connect(serverEP);
 
-                if (UserAuthentication())
+                // serverRequest.GetReplyFromServer(client);
+
+                string login = loginTextBox.Text;
+                string password = passwordPasswordBox.Password;
+
+                Task.Run(() =>
                 {
-                    MainWindow mainWindow = new MainWindow(client);
-                    mainWindow.Show();
-                    this.Close();
-                }
-                else
+                    NetworkStream dataStream = client.GetStream();
+                    writer = new BinaryWriter(dataStream);
+                    reader = new BinaryReader(dataStream);
+
+                    byte[] buffer = new byte[1000];
+
+                    while (client.Connected)
+                    {
+                        int length = reader.ReadInt32();
+                        buffer = reader.ReadBytes(length);
+
+                        ServerRequest sRequest = ServerRequest.ByteArrayToObect(buffer);
+
+                        if (sRequest.TypeRequest == TypeRequest.authentication)
+                        {
+                            string message = (string)sRequest.Data;
+
+                            if (message == login)
+                            {
+                                MainWindow mainWindow = new MainWindow(client);
+                                mainWindow.Show();
+                                this.Close();
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(new Action(() =>
+                                  {
+                                      MessageBox.Show("Don't correct Loggin are Password.\nPlease checking!");
+                                  }));
+                            }
+                        }
+                    }
+                });
+
+
+                ServerRequest serverRequest = new ServerRequest(portUser, TypeRequest.authentication, password);
+
+                Task.Run(() =>
                 {
-                    MessageBox.Show("Don't correct Loggin are Password.\nPlease checking!");
-                }
+                    if (serverRequest != null)
+                    {
+                        try
+                        {
+                            byte[] objectArr = ServerRequest.ObjectToByteArray(serverRequest);
+                            writer.Write(objectArr.Length);
+                            writer.Write(objectArr);
+                            writer.Flush();
+                        }
+                        catch (Exception ex)
+                        {
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                MessageBox.Show("Error send file to server " + ex.Message);
+                            }));
+                        }
+                    }
+                });
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show("System error!! " + ex.Message);
+                Dispatcher.Invoke(new Action(() =>
+                {
+
+                    MessageBox.Show("Error send file to server  " + ex.Message);
+
+                }));
             }
         }
 
-       
-        private bool UserAuthentication()
+
+        private bool UserAuthentication(string ms)
         {
 
             string login = loginTextBox.Text;
             string password = passwordPasswordBox.Password;
 
-            ServerRequest serverRequest = new ServerRequest();
+            //ServerRequest sRequest = new ServerRequest(portUser, TypeRequest.authentication, password);
+            //serverRequest.SendRequestToServer(sRequest);
 
-            return serverRequest.ClientAuthentication(new ServerRequest(login, password, client, TypeRequest.authentication));
-        }     
+
+
+            if (login == ms) { return true; }
+            return false;
+        }
+
     }
 }
