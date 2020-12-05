@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Chatex.Commands;
+using ServerAssistant;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -21,13 +23,21 @@ namespace Chatex
     /// </summary>
     public partial class MainWindow : Window
     {
-        public TcpClient Client; 
 
-        public MainWindow(TcpClient client)
+        public Assistant ClientConnection { get; }
+
+        public MainWindow(Assistant clientConnection)
         {
             InitializeComponent();
-            this.Client = client;
+            this.ClientConnection = clientConnection;
         }
+
+
+
+
+
+
+
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -36,7 +46,6 @@ namespace Chatex
                 DragMove();
             }
         }
-
         private void buttonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -53,7 +62,6 @@ namespace Chatex
         {
             Application.Current.Shutdown();
         }
-
         private void OpenContactInfoWindow_Click(object sender, RoutedEventArgs e)
         {
             ContactInfoScreen.Visibility = Visibility.Visible;

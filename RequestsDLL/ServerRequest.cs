@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
@@ -14,12 +15,15 @@ namespace RequestsDLL
         authentication = 1,
     }
 
+
+
     [Serializable]
     public class ServerRequest
     {
         public int Receiver { get; set; }
         public TypeRequest TypeRequest { get; set; }
         public object Data { get; set; }
+
 
         public ServerRequest()
         {
@@ -33,6 +37,7 @@ namespace RequestsDLL
             this.TypeRequest = typeRequest;
             this.Data = data;
         }
+
 
 
         public static ServerRequest ByteArrayToObect(byte[] arrBytes)

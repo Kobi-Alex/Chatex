@@ -180,9 +180,9 @@
       <Project>{a3846eaf-a61b-46e2-aa34-631c9345fde2}</Project>
       <Name>ChatModelsDLL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RequestsDLL\RequestsDLL.csproj">
-      <Project>{fd412454-c941-4b8f-84f5-688f9b3972f6}</Project>
-      <Name>RequestsDLL</Name>
+    <ProjectReference Include="..\ServerAssistant\ServerAssistant.csproj">
+      <Project>{21694b6d-70b8-40a1-8a06-a615cbfd0fdc}</Project>
+      <Name>ServerAssistant</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

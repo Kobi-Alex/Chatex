@@ -7,8 +7,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using RequestsDLL;
 using ChatModelsDLL;
+using ServerAssistant;
 
 namespace Server
 {
@@ -43,60 +43,60 @@ namespace Server
             }
         }
 
-        private void AuthenticationMethodAsync(object state)
-        {
-            TcpClient client = (TcpClient)state;
+        //private void AuthenticationMethodAsync(object state)
+        //{
+        //    TcpClient client = (TcpClient)state;
 
-            NetworkStream dataStream = client.GetStream();
-            BinaryReader reader = new BinaryReader(dataStream);
+        //    NetworkStream dataStream = client.GetStream();
+        //    BinaryReader reader = new BinaryReader(dataStream);
 
-            while (true)
-            {
-                byte[] buffer = new byte[1000];
-                try
-                {
-                    while (client.Connected)
-                    {
-                        int length = reader.ReadInt32();
-                        buffer = reader.ReadBytes(length);
+        //    while (true)
+        //    {
+        //        byte[] buffer = new byte[1000];
+        //        try
+        //        {
+        //            while (client.Connected)
+        //            {
+        //                int length = reader.ReadInt32();
+        //                buffer = reader.ReadBytes(length);
 
-                        currentClientPort = client.Client.RemoteEndPoint.ToString();
-                        Console.WriteLine(client.Client.RemoteEndPoint.ToString());
+        //                currentClientPort = client.Client.RemoteEndPoint.ToString();
+        //                Console.WriteLine(client.Client.RemoteEndPoint.ToString());
                         
-                        //отримали дані
-                        ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
+        //                //отримали дані
+        //                ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
 
-                        //logic Authentication
-                        if (serverRequest.TypeRequest == TypeRequest.authentication)
-                        {
-                            //var dataL = chatexDBEntities.Account.Find(serverRequest.Login);
-                            //var dataP = chatexDBEntities.Account.Find(serverRequest.Password);
+        //                //logic Authentication
+        //                if (serverRequest.TypeRequest == TypeRequest.authentication)
+        //                {
+        //                    //var dataL = chatexDBEntities.Account.Find(serverRequest.Login);
+        //                    //var dataP = chatexDBEntities.Account.Find(serverRequest.Password);
 
-                            //if (dataL != null && dataP != null)
-                            //{ 
+        //                    //if (dataL != null && dataP != null)
+        //                    //{ 
 
-                            //    ClientMethod(client);
-                            //}
-                        }
-                        else 
-                            break;
+        //                    //    ClientMethod(client);
+        //                    //}
+        //                }
+        //                else 
+        //                    break;
 
-                    }
-                }
-                catch (IOException)
-                {
-                    lock (locker)
-                    {
-                        this.connectedClients.Remove(client);
-                    }
-                    break;
-                }
-                finally
-                {
-                    reader.Close();
-                }
-            }
-        }
+        //            }
+        //        }
+        //        catch (IOException)
+        //        {
+        //            lock (locker)
+        //            {
+        //                this.connectedClients.Remove(client);
+        //            }
+        //            break;
+        //        }
+        //        finally
+        //        {
+        //            reader.Close();
+        //        }
+        //    }
+        //}
 
         private void ClientMethodAsync(TcpClient client)
         {
@@ -118,35 +118,33 @@ namespace Server
                         Console.WriteLine(client.Client.RemoteEndPoint.ToString());
 
                         //отримали дані
-                        ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
+                        Request serverRequest = Assistant.ByteArrayToObect(buffer);
 
                         //Logics 
                         switch (serverRequest.TypeRequest)
                         {
                             case TypeRequest.authentication:
                                 {
-                                    string pass = (string)serverRequest.Data;
-                                    string login =chatexDBEntities.Account.Where(c => c.Password == pass).Select(s => s.Login).FirstOrDefault();
+                                    Tuple<string, string> data = (Tuple<string, string>)serverRequest.Data;
+
+                                    string login = data.Item1;
+                                    string password = data.Item2;
+
+                                    string _login = chatexDBEntities.Account.Where(c => c.Login == login).Select(s => s.Login).FirstOrDefault();
+                                    string _password = chatexDBEntities.Account.Where(c => c.Password == password).Select(s => s.Password).FirstOrDefault();
 
 
-                                    if (login != null)
+                                    if (_login == login && _password == password)
                                     {
-                                       ///ServerRequest serverUnswer = new ServerRequest(portUser, TypeRequest.authentication, password);
-
-                                        serverRequest.Data = login;
-                                        buffer = ServerRequest.ObjectToByteArray(serverRequest);
-
-
-                                        //Task.Run(() => ResenderUnswerAuthenticationAsync(serverUnswer, client));
+                                        serverRequest.Data = true;
+                                        buffer = Assistant.ObjectToByteArray(serverRequest);
                                     }
-                                    //else
-                                    //{
-                                    //    serverRequest.Data = login;
-                                    //    byte[] serverUnswer = ServerRequest.ObjectToByteArray(serverRequest);
+                                    else 
+                                    {
+                                        serverRequest.Data = false;
+                                        buffer = Assistant.ObjectToByteArray(serverRequest);
+                                    }
 
-                                    //    // Task.Run(() => ResenderUnswerAuthenticationAsync(serverUnswer, client));
-                                    //    break;
-                                    //}
 
                                 }
                                 break;
@@ -199,7 +197,7 @@ namespace Server
         {
             byte[] buffer = (byte[])state;
 
-            ServerRequest serverRequest = ServerRequest.ByteArrayToObect(buffer);
+           Request serverRequest = Assistant.ByteArrayToObect(buffer);
 
            int port = serverRequest.Receiver;
 
@@ -214,6 +212,8 @@ namespace Server
                     {
                         if (this.connectedClients[i].Client.RemoteEndPoint.ToString() == ReceiveIpAddress)
                         {
+
+
                             BinaryWriter writer = new BinaryWriter(connectedClients[i].GetStream());
                             writer.Write(buffer.Length);
                             writer.Write(buffer);
