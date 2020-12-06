@@ -1,11 +1,13 @@
 ﻿using Chatex.Commands;
 using Chatex.Models;
+using ServerAssistant;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Chatex.ViewModels
@@ -16,6 +18,7 @@ namespace Chatex.ViewModels
         #region MainWindow
 
         #region Properties
+        public int AccountId { get; set; }
         public string ContactName { get; set; }
         public Uri ContactPhoto { get; set; }
         public string LastSeen { get; set; }
@@ -198,6 +201,8 @@ namespace Chatex.ViewModels
         {
             Chats = new ObservableCollection<ChatLisData>()
             {
+
+
                 new ChatLisData
                 {
                     AccountId = 8,
@@ -239,16 +244,19 @@ namespace Chatex.ViewModels
                 return _getSelectedChatCommand ??
                     (_getSelectedChatCommand = new RelayCommand(parameter =>
                     {
-                         if (parameter is ChatLisData v)
-                         {
-                             ContactName = v.ContactName;
-                             OnPropertyChanged("ContactName");
+                        if (parameter is ChatLisData v)
+                        {
+                            AccountId = v.AccountId;
+                            OnPropertyChanged("AccountId");
 
-                             ContactPhoto = v.ContactPhoto;
-                             OnPropertyChanged("ContactPhoto");
+                            ContactName = v.ContactName;
+                            OnPropertyChanged("ContactName");
+
+                            ContactPhoto = v.ContactPhoto;
+                            OnPropertyChanged("ContactPhoto");
 
                             LoadChatConversation(v);
-;                         }
+                        }
                     }));
             }
         }
@@ -320,13 +328,36 @@ namespace Chatex.ViewModels
                     }));
             }
         }
-        #endregion
+
+
+        protected ICommand _sendMessageCommand;
+        public ICommand SendMessageCommand
+        {
+            get
+            {
+                return _sendMessageCommand ??
+                    (_sendMessageCommand = new RelayCommand(parameter =>
+                    {
+                        ChatLisData v = new ChatLisData()
+                        {
+                            AccountId = this.AccountId,
+                        };
+
+                        LoadChatConversation(v);
+
+                    }));
+            }
+        }
 
         #endregion
 
-        #region Conversations
+            #endregion
 
-        #region Properties
+
+
+            #region Conversations
+
+            #region Properties
         protected ObservableCollection<ChatConversation> mConversations;
         public ObservableCollection<ChatConversation> Conversations
         {
@@ -354,7 +385,7 @@ namespace Chatex.ViewModels
 
 
         #region Logics
-        void LoadChatConversation(ChatLisData chat)
+        public void LoadChatConversation(ChatLisData chat)
         {
             if (connection.State == System.Data.ConnectionState.Closed)
                 connection.Open();
@@ -363,7 +394,7 @@ namespace Chatex.ViewModels
 
             Conversations.Clear();
 
-            using(SqlCommand com = new SqlCommand("select* From Conversation where AccountID = @AccountId", connection))
+            using (SqlCommand com = new SqlCommand("select* From Conversation where AccountID = @AccountId", connection))
             {
                 com.Parameters.AddWithValue("@AccountId", chat.AccountId);
                 using (SqlDataReader reader = com.ExecuteReader())
@@ -383,7 +414,7 @@ namespace Chatex.ViewModels
                             MsgReceivedOn = MsgReceivedOn,
                             SentMessage = reader["SentMsg"].ToString(),
                             MsgSentOn = MsgSentOn,
-                            IsMessageReceived = string.IsNullOrEmpty(reader["ReceivedMsgs"].ToString())?false:true
+                            IsMessageReceived = string.IsNullOrEmpty(reader["ReceivedMsgs"].ToString()) ? false : true
 
                         };
                         Conversations.Add(conversation);
@@ -391,7 +422,6 @@ namespace Chatex.ViewModels
                     }
                 }
             }
-
         }
 
 
@@ -401,6 +431,8 @@ namespace Chatex.ViewModels
 
 
         SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-5DLJ44R;Initial Catalog=ChatexDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        
+
         public ViewModel()
         {
             LoadStatusThumbs();

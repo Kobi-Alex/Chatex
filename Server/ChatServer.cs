@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ChatModelsDLL;
 using ServerAssistant;
+using System.Data.SqlClient;
 
 namespace Server
 {
@@ -19,6 +20,7 @@ namespace Server
         private List<TcpClient> connectedClients;
         private string currentClientPort;
         ChatexDBEntities chatexDBEntities = new ChatexDBEntities();
+        Dictionary<string, int> serverAuData = new Dictionary<string, int>();
 
         public ChatServer(IPAddress serverIp, int port)
         {
@@ -102,7 +104,7 @@ namespace Server
         {
             NetworkStream dataStream = client.GetStream();
             BinaryReader reader = new BinaryReader(dataStream);
-
+            Assistant assistant = new Assistant();
 
             while (true)
             {
@@ -130,32 +132,54 @@ namespace Server
                                     string login = data.Item1;
                                     string password = data.Item2;
 
-                                    string _login = chatexDBEntities.Account.Where(c => c.Login == login).Select(s => s.Login).FirstOrDefault();
-                                    string _password = chatexDBEntities.Account.Where(c => c.Password == password).Select(s => s.Password).FirstOrDefault();
+                                    Account user = chatexDBEntities.Account.Where(c => c.Login == login && c.Password == password).FirstOrDefault();
 
+                                    if (user !=null)
+                                    { 
+                                        serverAuData.Add(client.Client.RemoteEndPoint.ToString(), user.Id);
 
-                                    if (_login == login && _password == password)
-                                    {
-                                        serverRequest.Data = true;
-                                        buffer = Assistant.ObjectToByteArray(serverRequest);
+                                        serverRequest.Data = true; 
                                     }
-                                    else 
-                                    {
-                                        serverRequest.Data = false;
-                                        buffer = Assistant.ObjectToByteArray(serverRequest);
-                                    }
-
+                                    else {serverRequest.Data = false;}
 
                                 }
                                 break;
-                                //case TypeRequest.authentication:
-                                //    логіка отримання повідомлення
-                                //    break;
-                                //case TypeRequest.authentication:
-                                //    логіка отримання повідомлення
-                                //    break;
+
+                            case TypeRequest.text:
+                                {
+                                    string data = (string)serverRequest.Data;
+                                    string key = client.Client.RemoteEndPoint.ToString();
+
+                                    Conversation conversation = new Conversation
+                                    {
+                                        AccountID = serverAuData.Where(item => item.Key == key).Select(i => i.Value).FirstOrDefault(),
+                                        LastOnline = DateTime.Now.Date,
+                                        SentMsg = data,
+                                        MsgSentOn = DateTime.Now
+                                    };
+
+                                    chatexDBEntities.Conversation.Add(conversation);
+                                    chatexDBEntities.SaveChanges(); 
+                                }
+                                break;
+                            case TypeRequest.loadData:
+                                {
+                                    string key = client.Client.RemoteEndPoint.ToString();
+                                    int Id = serverAuData.Where(item => item.Key == key).Select(i => i.Value).FirstOrDefault();
+
+                                    var Data = chatexDBEntities.ChatList.AsNoTracking().Where(a => a.AccountID == Id).
+                                        Join(chatexDBEntities.Account, c => c.AccountID, (ac) => ac.Id, (c, ac) => ac).ToList();
+                                        //Select(ac => new { ac.Id, ac.Login, ac.ContactName, ac.ContactPhoto }).ToList();
+
+
+
+
+                                    serverRequest.Data = Data;
+                                }
+                                break;
                         }
 
+                        buffer = Assistant.ObjectToByteArray(serverRequest);
                         Task.Run(() => ResenderAsync(buffer));
                     }
                 }
@@ -175,33 +199,12 @@ namespace Server
         }
 
 
-        public void ResenderUnswerAuthenticationAsync(object state, TcpClient client)
-        {
-            byte[] buffer = (byte[])state;
-
-            lock (this.locker)
-            {
-                if (client.Connected)
-                {
-                    BinaryWriter writer = new BinaryWriter(client.GetStream());
-                    writer.Write(buffer.Length);
-                    writer.Write(buffer);
-                    writer.Flush();
-                }             
-            }
-        }
-
-
-
         public void ResenderAsync(object state)
         {
             byte[] buffer = (byte[])state;
 
-           Request serverRequest = Assistant.ByteArrayToObect(buffer);
-
-           int port = serverRequest.Receiver;
-
-            string ReceiveIpAddress = $"127.0.0.1:{port}";
+            //Request serverRequest = Assistant.ByteArrayToObect(buffer);
+           // string port = serverRequest.Receiver;
 
             lock (this.locker)
             {
@@ -210,10 +213,8 @@ namespace Server
                 {
                     if (this.connectedClients[i].Connected)
                     {
-                        if (this.connectedClients[i].Client.RemoteEndPoint.ToString() == ReceiveIpAddress)
+                       // if (this.connectedClients[i].Client.RemoteEndPoint.ToString() == port)
                         {
-
-
                             BinaryWriter writer = new BinaryWriter(connectedClients[i].GetStream());
                             writer.Write(buffer.Length);
                             writer.Write(buffer);

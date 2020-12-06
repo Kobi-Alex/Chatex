@@ -4,13 +4,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 
+
+
 namespace ServerAssistant
 {
     public class Assistant
     {
         public TcpClient Client { get; private set; }
-        //private BinaryWriter writer;
-        //private BinaryReader reader;
+
+        private int id;
+        public int Id { get => id; set => id = value; }
+
 
         public Assistant()
         {
@@ -30,21 +34,20 @@ namespace ServerAssistant
             this.Client = client;
         }
 
-
-        //public void SignMessaggeToServer(Request data)
-        //{
-        //    byte[] objectArr = ObjectToByteArray(data);
-        //    writer.Write(objectArr.Length);
-        //    writer.Write(objectArr);
-        //    writer.Flush();
-        //}
-
-
-        public void RecivedMessageFromServer()
+        public void SignRequestToServer(Request data)
         {
+            BinaryWriter writer = new BinaryWriter(Client.GetStream());
 
+            byte[] objectArr = ObjectToByteArray(data);
+            writer.Write(objectArr.Length);
+            writer.Write(objectArr);
+            writer.Flush();
         }
 
+        public void RecivedDataFromServer()
+        {
+            
+        }
 
 
 
@@ -61,7 +64,6 @@ namespace ServerAssistant
                 return obj as Request;
             }
         }
-
         public static byte[] ObjectToByteArray(Request obj)
         {
             BinaryFormatter bf = new BinaryFormatter();

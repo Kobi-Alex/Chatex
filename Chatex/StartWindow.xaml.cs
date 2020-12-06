@@ -26,39 +26,33 @@ namespace Chatex
     public partial class StartWindow : Window
     {
         private readonly int portUser = new Random().Next(1200, 30000);
-
         private Assistant clientConnection = new Assistant();
-        private BinaryWriter writer;
         private BinaryReader reader;
 
         public StartWindow()
         {
             InitializeComponent();
         }
-        private void signIn_Click(object sender, RoutedEventArgs e)
+        private void SignIn_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                signIn.IsEnabled = false;
                 Tuple<string, string> dataRequest = new Tuple<string, string>(loginTextBox.Text, passwordPasswordBox.Password);
 
                 Task.Run(() =>
-                {
-                    Request serverRequest = new Request(portUser, TypeRequest.authentication, dataRequest);
+                {     
+                    Request serverRequest = new Request(TypeRequest.authentication, dataRequest);
+
                     if (serverRequest != null)
                     {
                         try
                         {
-                            byte[] objectArr = Assistant.ObjectToByteArray(serverRequest);
-                            writer.Write(objectArr.Length);
-                            writer.Write(objectArr);
-                            writer.Flush();
+                            clientConnection.SignRequestToServer(serverRequest);
                         }
                         catch (Exception ex)
                         {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                MessageBox.Show("Error send file to server " + ex.Message);
-                            }));
+                            Dispatcher.Invoke(new Action(() => { MessageBox.Show("Error send file to server " + ex.Message );}));
                         }
                     }
                 });
@@ -67,6 +61,7 @@ namespace Chatex
             {
                 MessageBox.Show("Error connect to server  " + ex.Message);            
             }
+  
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -75,7 +70,6 @@ namespace Chatex
             Task.Run(() =>
             {
                 NetworkStream dataStream = clientConnection.Client.GetStream();
-                writer = new BinaryWriter(dataStream);
                 reader = new BinaryReader(dataStream);
 
                 byte[] buffer = new byte[1000];
@@ -91,7 +85,7 @@ namespace Chatex
                     {
                         //string login = string.Empty;
                         //Dispatcher.Invoke(new Action(() =>
-                        //{
+                        //{\
                         //    login = loginTextBox.Text;
                         //}));
 
@@ -112,6 +106,7 @@ namespace Chatex
                         {
                             Dispatcher.Invoke(new Action(() =>
                             {
+                                signIn.IsEnabled = true;
                                 MessageBox.Show("Don't correct Loggin are Password.\nPlease checking!");
                             }));
                         }

@@ -16,7 +16,7 @@
         Title="Chatex"
         ResizeMode="NoResize"
         WindowStyle="None"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Loaded="mainWindow_Loaded">
 
     <Window.DataContext>
         <viewmodels:ViewModel></viewmodels:ViewModel>
@@ -24,12 +24,12 @@
     
     <Window.Resources>
 
-        <!--<Style x:Key="ContactInfoButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="Transparent"></Setter>
-            <Setter Property="BorderBrush" Value="Transparent"></Setter>
-            <Setter Property="BorderThickness" Value="0"></Setter>
+
+        <!--<Style x:Key="MessageButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Command" Value="{Binding DataContext.GetSelectedChatCommand, ElementName=_Chats, UpdateSourceTrigger=PropertyChanged}"></Setter>
+            <Setter Property="CommandParameter" Value="{Binding}"></Setter>
         </Style>-->
-        
+
         <ControlTemplate x:Key="ContactInfoButtonTemplate" TargetType="{x:Type Button}">
             <Grid VerticalAlignment="Center" Height="60" >
                 <Grid.ColumnDefinitions>
@@ -352,7 +352,9 @@
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 Style="{StaticResource MaterialDesignTextBox}"
-                                x:Name="MessageBox">
+                                x:Name="messageBox"
+                                TextChanged="messageBox_TextChanged">
+                                
                                 <!--To-DO Intup Binding-->
                                 
                             </TextBox>
@@ -368,6 +370,7 @@
                                     Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
                                     Background="{x:Null}"
                                     Margin="3"
+                                    Click="InsertPhoto_Click"
                                     >
                                     <materialDesign:PackIcon Kind="InsertPhoto" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
                                 </Button>
@@ -376,16 +379,22 @@
                                     Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
                                     Background="{x:Null}"
                                     Margin="3"
+                                    Click="InsertAudioFile_Click"
+                                    
                                     >
                                     <materialDesign:PackIcon Kind="Microphone" Foreground="{StaticResource PrimaryHueDarkBrush}"></materialDesign:PackIcon>
                                 </Button>
 
+
                                 <Button
                                     x:Name="SendMessage"
-                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
                                     Margin="10 0 5 0"
-                                    >
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+                                    Click="SendMessage_Click"
+                                    Command="{Binding SendMessageCommand}">
+
                                     <materialDesign:PackIcon Kind="Send" ></materialDesign:PackIcon>
+  
                                 </Button>
 
 

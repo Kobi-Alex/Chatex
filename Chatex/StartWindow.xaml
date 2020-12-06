@@ -64,7 +64,7 @@
 
             
             <!--Sign In Button-->
-            <Button x:Name="signIn" Style="{StaticResource MaterialDesignFlatButton}" Height="60" Click="signIn_Click">
+            <Button x:Name="signIn" Style="{StaticResource MaterialDesignFlatButton}" Height="60" Click="SignIn_Click">
                 <materialDesign:PackIcon 
                     Kind="LoginVariant" 
                     Foreground="FloralWhite" 
